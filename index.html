@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BorderHealth Guardian v1.4.2</title>
+<link rel="manifest" href="manifest.webmanifest"/>
+<meta name="theme-color" content="#4f46e5"/>
+<link rel="icon" href="icons/icon-192.png"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .btn{padding:.6rem .9rem;border-radius:.75rem;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .card{background:#fff;border-radius:1rem;padding:1rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+</style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+<header class="bg-indigo-600 text-white p-4 shadow">
+  <div class="max-w-5xl mx-auto flex items-center justify-between">
+    <div>
+      <div class="font-bold text-xl">BorderHealth Guardian <span class="text-xs opacity-80">v1.4.2</span></div>
+      <div class="text-xs text-indigo-200">PWA ออฟไลน์ • กล้อง + OCR MRZ • ZIP รายวัน • PIN เข้ารหัส</div>
+    </div>
+    <div class="flex gap-2">
+      <button id="assetCheck" class="px-3 py-2 bg-indigo-700 rounded">ตรวจไฟล์ OCR</button>
+    </div>
+  </div>
+</header>
+
+<nav class="max-w-5xl mx-auto mt-3 flex flex-wrap gap-2">
+  <button class="tab btn bg-white" data-tab="home">หน้าแรก</button>
+  <button class="tab btn bg-white" data-tab="ocr">OCR MRZ</button>
+  <button class="tab btn bg-white" data-tab="quick">คัดกรองด่วน</button>
+  <button class="tab btn bg-white" data-tab="disease">จัดการโรคเสี่ยง</button>
+  <button class="tab btn bg-white" data-tab="stats">สถิติ</button>
+</nav>
+
+<main class="max-w-5xl mx-auto p-4 space-y-4">
+  <section id="tab-home" class="space-y-4">
+    <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-3">
+      <a class="btn bg-indigo-600 text-white text-center" data-tabto="ocr">🔍 สแกนหนังสือเดินทาง</a>
+      <a class="btn bg-white border text-center" data-tabto="quick">👤 คัดกรองด่วน</a>
+      <a class="btn bg-white border text-center" data-tabto="disease">🔔 จัดการโรคเสี่ยง</a>
+      <a class="btn bg-white border text-center" data-tabto="stats">📊 สถิติ</a>
+    </div>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div class="card"><div class="text-3xl font-bold" id="dash-today">0</div><div class="text-sm text-gray-500">คัดกรองวันนี้</div></div>
+      <div class="card"><div class="text-3xl font-bold text-amber-600" id="dash-risk">0</div><div class="text-sm text-gray-500">ติดธง</div></div>
+      <div class="card"><div class="text-3xl font-bold text-green-600" id="dash-clear">0</div><div class="text-sm text-gray-500">ผ่าน</div></div>
+    </div>
+  </section>
+
+  <section id="tab-ocr" class="hidden">
+    <div class="card space-y-3">
+      <h3 class="font-bold">สแกนหนังสือเดินทาง (กล้อง + OCR MRZ)</h3>
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="space-y-2">
+          <video id="cam" class="w-full rounded-xl bg-black aspect-video" autoplay playsinline></video>
+          <div class="grid grid-cols-3 gap-2">
+            <button class="btn bg-indigo-600 text-white" id="openCam">เปิดกล้อง</button>
+            <button class="btn bg-white border" id="takePhoto">ถ่ายภาพ</button>
+            <button class="btn bg-white border" id="closeCam">ปิดกล้อง</button>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <input type="file" id="fileInput" accept="image/*" class="hidden"/>
+            <button class="btn bg-white border" id="pickFile">เลือกรูปจากเครื่อง</button>
+            <select id="ocrMode" class="border rounded-lg px-2"><option value="cdn">CDN</option><option value="local">Local assets</option></select>
+            <button class="btn bg-yellow-500 text-white col-span-1" id="btnRunMrz">OCR MRZ</button>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="border-4 border-dashed border-indigo-300 rounded-xl h-48 flex items-center justify-center text-indigo-600" id="scan-frame">
+            <div class="text-center"><div class="text-2xl">📷</div><div>ให้เห็น 2 บรรทัด MRZ ชัดเจน</div></div>
+          </div>
+          <img id="photo" class="hidden w-full rounded-xl border" alt="captured"/>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-5 gap-2 text-sm">
+        <div class="card"><div class="text-gray-500">Passport</div><div id="scan-passport">-</div></div>
+        <div class="card"><div class="text-gray-500">ชื่อ</div><div id="scan-firstName">-</div></div>
+        <div class="card"><div class="text-gray-500">นามสกุล</div><div id="scan-lastName">-</div></div>
+        <div class="card"><div class="text-gray-500">สัญชาติ</div><div id="scan-nationality">-</div></div>
+        <div class="card"><div class="text-gray-500">วันเกิด</div><div id="scan-birthDate">-</div></div>
+      </div>
+
+      <div><button class="btn bg-white border text-xs" id="toggleDbg">แสดง/OCR Debug</button></div>
+      <pre id="ocrDbg" class="hidden mt-2 p-2 bg-gray-50 rounded text-[10px] whitespace-pre-wrap"></pre>
+    </div>
+  </section>
+
+  <section id="tab-quick" class="hidden">
+    <div class="card">
+      <h3 class="font-bold mb-2">คัดกรองด่วน (ตัวอย่าง)</h3>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input class="border p-2 rounded" placeholder="ชื่อ-นามสกุล"/>
+        <input class="border p-2 rounded" placeholder="เลขพาสปอร์ต"/>
+        <input class="border p-2 rounded" placeholder="ประเทศต้นทาง"/>
+        <input class="border p-2 rounded" placeholder="อาการสำคัญ"/>
+      </div>
+      <button class="btn bg-indigo-600 text-white mt-3">คำนวณความเสี่ยง</button>
+    </div>
+  </section>
+
+  <section id="tab-disease" class="hidden">
+    <div class="card">
+      <h3 class="font-bold mb-2">จัดการโรคเสี่ยง (ตัวอย่าง)</h3>
+      <p class="text-sm text-gray-600">ใส่ UI จริงของเธอลงในส่วนนี้ได้เลย (เพิ่ม/แก้ไข/ลบ/เปิดปิดแจ้งเตือน)</p>
+    </div>
+  </section>
+
+  <section id="tab-stats" class="hidden">
+    <div class="card">
+      <h3 class="font-bold mb-2">สถิติ (ตัวอย่าง)</h3>
+      <p class="text-sm text-gray-600">ใส่กราฟ/รายงานจริงของเธอในส่วนนี้</p>
+    </div>
+  </section>
+</main>
+
+<script>
+function showTab(id){
+  for(const el of document.querySelectorAll('main > section')) el.classList.add('hidden');
+  const t=document.getElementById('tab-'+id); if(t) t.classList.remove('hidden');
+  for(const b of document.querySelectorAll('nav .tab')) b.classList.remove('bg-indigo-600','text-white');
+  const btn=[...document.querySelectorAll('nav .tab')].find(x=>x.dataset.tab===id);
+  if(btn) btn.classList.add('bg-indigo-600','text-white');
+}
+document.addEventListener('click',e=>{
+  const to=e.target.closest('[data-tab]'); if(to) showTab(to.dataset.tab);
+  const to2=e.target.closest('[data-tabto]'); if(to2) showTab(to2.dataset.tabto);
+});
+showTab('home');
+
+async function checkAsset(url){ try{ const r=await fetch(url,{cache:'no-cache'}); return r.ok }catch(e){ return false } }
+document.getElementById('assetCheck').onclick=async()=>{
+  const dbg=document.getElementById('ocrDbg'); dbg.classList.remove('hidden'); dbg.textContent='กำลังตรวจไฟล์ OCR...';
+  const a0=await checkAsset('./assets/tesseract/tesseract.min.js');
+  const a =await checkAsset('./assets/tesseract/worker.min.js');
+  const b =await checkAsset('./assets/tesseract/tesseract-core.wasm.js');
+  const c =await checkAsset('./assets/tessdata/eng.traineddata');
+  dbg.textContent=[
+    'assets/tesseract/tesseract.min.js ...... ' + (a0?'พบ ✅':'ไม่พบ ❌'),
+    'assets/tesseract/worker.min.js ......... ' + (a ?'พบ ✅':'ไม่พบ ❌'),
+    'assets/tesseract/tesseract-core.wasm.js  ' + (b ?'พบ ✅':'ไม่พบ ❌'),
+    'assets/tessdata/eng.traineddata ........ ' + (c ?'พบ ✅':'ไม่พบ ❌'),
+    '',
+    'ถ้าไม่พบ: ให้วางไฟล์ตาม README ในโฟลเดอร์ assets/'
+  ].join('\\n');
+};
+
+// Camera
+async function startCamera(){ try{ const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}); document.getElementById('cam').srcObject=s; window._cam=s; }catch(e){ alert('เปิดกล้องไม่ได้: '+(e.message||e)); } }
+function stopCamera(){ if(window._cam){ window._cam.getTracks().forEach(t=>t.stop()); window._cam=null; } document.getElementById('cam').srcObject=null; }
+function capturePhoto(){ const v=document.getElementById('cam'); if(!v||!v.srcObject){ alert('ยังไม่เปิดกล้อง'); return; } const c=document.createElement('canvas'); c.width=v.videoWidth; c.height=v.videoHeight; c.getContext('2d').drawImage(v,0,0,c.width,c.height); const url=c.toDataURL('image/jpeg',0.9); const img=document.getElementById('photo'); img.src=url; img.classList.remove('hidden'); document.getElementById('scan-frame').classList.add('hidden'); }
+
+document.getElementById('openCam').onclick=startCamera;
+document.getElementById('closeCam').onclick=stopCamera;
+document.getElementById('takePhoto').onclick=capturePhoto;
+document.getElementById('pickFile').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const img=document.getElementById('photo'); img.src=r.result; img.classList.remove('hidden'); document.getElementById('scan-frame').classList.add('hidden'); }; r.readAsDataURL(f); });
+document.getElementById('toggleDbg').onclick=()=>document.getElementById('ocrDbg').classList.toggle('hidden');
+
+// --- NEW: loadScript + ensureTesseract ---
+function loadScript(src){
+  return new Promise((res, rej)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=()=>res(); s.onerror=()=>rej(new Error('โหลดสคริปต์ไม่สำเร็จ: '+src));
+    document.head.appendChild(s);
+  });
+}
+function loadTesseractCDN(){
+  if(window.Tesseract) return Promise.resolve();
+  return loadScript('https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js');
+}
+async function ensureTesseract(mode){
+  if(window.Tesseract) return;
+  if(mode==='local'){
+    await loadScript('./assets/tesseract/tesseract.min.js');
+  }else{
+    await loadTesseractCDN();
+  }
+}
+
+function parseMRZ(text){
+  const lines=text.toUpperCase().replace(/[^A-Z0-9<\\n]/g,'').split(/\\n/).map(x=>x.trim()).filter(Boolean);
+  if(lines.length<2) return null; const l1=lines[0].padEnd(44,'<'), l2=lines[1].padEnd(44,'<');
+  const nationality=l1.slice(2,5).replace(/</g,'');
+  const namePart=l1.slice(5).replace(/<+/g,' ').trim(); const parts=namePart.split(' ').filter(Boolean);
+  const last=parts[0]||'', first=parts.slice(1).join(' ')||'';
+  const passport=l2.slice(0,9).replace(/</g,''), birth=l2.slice(13,19);
+  const toDate=(yymmdd)=>{ const yy=+yymmdd.slice(0,2), mm=+yymmdd.slice(2,4), dd=+yymmdd.slice(4,6); const yyyy=yy>=50?1900+yy:2000+yy; return `${yyyy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; };
+  return {passportNo:passport, firstName:first, lastName:last, nationality, birthDate:toDate(birth)};
+}
+const state={draft:{}};
+async function runMRZ(){
+  const img=document.getElementById('photo'); if(img.classList.contains('hidden')){ alert('ถ่ายหรือเลือกรูปก่อน'); return; }
+  const modeSel=document.getElementById('ocrMode'); let mode=modeSel.value;
+  const btn=document.getElementById('btnRunMrz'); const old=btn.textContent; btn.disabled=true; btn.textContent='กำลังอ่าน...'; document.body.style.cursor='progress';
+  try{
+    try{
+      await ensureTesseract(mode);
+    }catch(e){
+      if(mode==='local'){ mode='cdn'; modeSel.value='cdn'; await ensureTesseract('cdn'); }
+      else throw e;
+    }
+    const workerConfig=(mode==='local')?{
+      workerPath:'./assets/tesseract/worker.min.js',
+      corePath:'./assets/tesseract/tesseract-core.wasm.js',
+      langPath:'./assets/tessdata/',
+      logger:m=>console.log(m)
+    }:{logger:m=>console.log(m)};
+    const worker=await Tesseract.createWorker(workerConfig);
+    await worker.loadLanguage('eng'); await worker.initialize('eng');
+    await worker.setParameters({tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',preserve_interword_spaces:'1',tessedit_pageseg_mode:'6',user_defined_dpi:'300'});
+    const ret=await worker.recognize(img); await worker.terminate();
+    const text=ret?.data?.text||''; document.getElementById('ocrDbg').textContent=text;
+    const mrz=parseMRZ(text); if(!mrz){ alert('อ่าน MRZ ไม่สำเร็จ'); return; }
+    Object.assign(state.draft,mrz);
+    document.getElementById('scan-passport').textContent=mrz.passportNo||'-';
+    document.getElementById('scan-firstName').textContent=mrz.firstName||'-';
+    document.getElementById('scan-lastName').textContent=mrz.lastName||'-';
+    document.getElementById('scan-nationality').textContent=mrz.nationality||'-';
+    document.getElementById('scan-birthDate').textContent=mrz.birthDate||'-';
+  }catch(e){ alert('OCR ผิดพลาด: '+(e?.message||e)); }
+  finally{ btn.disabled=false; btn.textContent=old; document.body.style.cursor='default'; }
+}
+document.getElementById('btnRunMrz').onclick=runMRZ;
+
+if('serviceWorker' in navigator && (location.protocol==='http:'||location.protocol==='https:')){
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
+</body>
+</html>
