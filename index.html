@@ -44,7 +44,6 @@
 </nav>
 
 <main class="max-w-6xl mx-auto p-4 space-y-4">
-  <!-- HOME -->
   <section id="tab-home" class="space-y-4">
     <div class="grid md:grid-cols-4 sm:grid-cols-2 gap-3">
       <a class="btn bg-indigo-600 text-white text-center" data-tabto="ocr">🔍 สแกนหนังสือเดินทาง</a>
@@ -59,7 +58,6 @@
     </div>
   </section>
 
-  <!-- OCR -->
   <section id="tab-ocr" class="hidden">
     <div class="card space-y-3">
       <h3 class="font-bold">สแกนหนังสือเดินทาง (กล้อง + OCR MRZ)</h3>
@@ -99,7 +97,6 @@
     </div>
   </section>
 
-  <!-- QUICK SCREEN -->
   <section id="tab-quick" class="hidden">
     <div class="card space-y-3">
       <h3 class="font-bold">คัดกรองด่วน</h3>
@@ -134,7 +131,6 @@
     </div>
   </section>
 
-  <!-- DISEASE MANAGER -->
   <section id="tab-disease" class="hidden">
     <div class="card space-y-3">
       <h3 class="font-bold">จัดการโรคเสี่ยง</h3>
@@ -155,7 +151,6 @@
     </div>
   </section>
 
-  <!-- STATS -->
   <section id="tab-stats" class="hidden">
     <div class="card space-y-2">
       <h3 class="font-bold">สถิติ</h3>
@@ -237,70 +232,9 @@ function loadScript(src){ return new Promise((res, rej)=>{ const s=document.crea
 function loadTesseractCDN(){ if(window.Tesseract) return Promise.resolve(); return loadScript('https://unpkg.com/tesseract.js@5.1.1/dist/tesseract.min.js'); }
 async function ensureTesseract(mode){ if(window.Tesseract) return; if(mode==='local'){ await loadScript('./assets/tesseract/tesseract.min.js'); } else { await loadTesseractCDN(); } }
 
-function parseMRZ(rawText){
-  // 1) ทำความสะอาดข้อความ
-  const clean = rawText
-    .toUpperCase()
-    .replace(/[^\nA-Z0-9<]/g,'')     // เก็บเฉพาะ A-Z 0-9 <
-    .replace(/<+/g, m => m.length>3 ? m : '<') // เบื้องต้นรวม <
-    .replace(/\r/g,'')
-    .trim();
+function parseMRZ(text){ const lines=text.toUpperCase().replace(/[^A-Z0-9<\n]/g,'').split(/\n/).map(x=>x.trim()).filter(Boolean); if(lines.length<2) return null; const l1=lines[0].padEnd(44,'<'), l2=lines[1].padEnd(44,'<'); const nationality=l1.slice(2,5).replace(/</g,''); const namePart=l1.slice(5).replace(/<+/g,' ').trim(); const parts=namePart.split(' ').filter(Boolean); const last=parts[0]||'', first=parts.slice(1).join(' ')||''; const passport=l2.slice(0,9).replace(/</g,''), birth=l2.slice(13,19); const toDate=(yymmdd)=>{ const yy=+yymmdd.slice(0,2), mm=+yymmdd.slice(2,4), dd=+yymmdd.slice(4,6); const yyyy=yy>=50?1900+yy:2000+yy; return `${yyyy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`; }; return {passportNo:passport, firstName:first, lastName:last, nationality, birthDate:toDate(birth)}; }
 
-  // 2) ตัดบรรทัด แล้วคัดบรรทัดที่ “หน้าตาเหมือน MRZ” ที่สุด
-  const lines = clean.split('\n').map(s=>s.trim()).filter(Boolean);
-
-  // คัดเฉพาะบรรทัดที่ยาว >= 30 และประกอบด้วย [A-Z0-9<] ล้วน
-  const cand = lines
-    .filter(s => s.length >= 30 && /^[A-Z0-9<]+$/.test(s))
-    .map(s => ({ s, score: (s.match(/</g)||[]).length + s.length })); // ยิ่งมี < และยาว ยิ่งดี
-
-  if (cand.length < 2){
-    // ถ้ายังขาด ลองหยิบ "2 บรรทัดล่างสุด" เป็นแผนสำรอง
-    const tail = lines.slice(-3).filter(s=>s.length>=25);
-    if (tail.length >= 2) {
-      cand.push({s: tail[tail.length-2], score: 0});
-      cand.push({s: tail[tail.length-1], score: 0});
-    }
-  }
-
-  if (cand.length < 2) return null;
-
-  // 3) เลือก 2 บรรทัดที่คะแนนสูงสุด
-  cand.sort((a,b)=>b.score-a.score);
-  const L1 = cand[0].s.padEnd(44,'<').slice(0,44);
-  const L2 = cand[1].s.padEnd(44,'<').slice(0,44);
-
-  // ให้ L1 คือบรรทัดที่ขึ้นต้นด้วยอักษรประเภทเอกสาร (P/ID ฯลฯ)
-  let l1=L1, l2=L2;
-  if (!/^[A-Z<]{1}/.test(L1[0]) && /^[A-Z<]{1}/.test(L2[0])) { l1=L2; l2=L1; }
-
-  // 4) ดึงข้อมูลแบบ TD3
-  // l1: ‘P<THA…’  l2: ‘A12345678…’
-  const nationality = l1.slice(2,5).replace(/</g,'');
-  const namePart = l1.slice(5).replace(/<+/g,' ').trim();
-  const parts = namePart.split(' ').filter(Boolean);
-  const lastName  = parts[0]||'';
-  const firstName = parts.slice(1).join(' ')||'';
-
-  const passportNo = l2.slice(0,9).replace(/</g,'');
-  const birthYYMMDD= l2.slice(13,19);
-
-  const toDate = (yymmdd)=>{
-    const yy=+yymmdd.slice(0,2), mm=+yymmdd.slice(2,4), dd=+yymmdd.slice(4,6);
-    const yyyy = yy>=50 ? 1900+yy : 2000+yy;
-    return `${yyyy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
-  };
-
-  return {
-    passportNo,
-    firstName,
-    lastName,
-    nationality,
-    birthDate: /^\d{6}$/.test(birthYYMMDD) ? toDate(birthYYMMDD) : ''
-  };
-}
-
-async function runMRZ(){ const img=document.getElementById('photo'); if(img.classList.contains('hidden')){ alert('ถ่ายหรือเลือกรูปก่อน'); return; } const modeSel=document.getElementById('ocrMode'); let mode=modeSel.value; const btn=document.getElementById('btnRunMrz'); const old=btn.textContent; btn.disabled=true; btn.textContent='กำลังอ่าน...'; document.body.style.cursor='progress'; try{ try{ await ensureTesseract(mode); }catch(e){ if(mode==='local'){ mode='cdn'; modeSel.value='cdn'; await ensureTesseract('cdn'); } else { throw e; } } let workerConfig; if(mode==='local'){ workerConfig={ workerPath:'./assets/tesseract/worker.min.js', corePath:'./assets/tesseract/tesseract-core.wasm.js', langPath:'./assets/tessdata/', logger:m=>console.log(m) }; }else{ const CDN_JS='https://unpkg.com/tesseract.js@5.1.1/dist/'; const CDN_CORE='https://unpkg.com/tesseract.js-core@5.1.1/tesseract-core.wasm.js'; workerConfig={ workerPath:CDN_JS+'worker.min.js', corePath:CDN_CORE, langPath:'./assets/tessdata/', logger:m=>console.log(m) }; } const worker=await Tesseract.createWorker(workerConfig); await worker.loadLanguage('eng'); await worker.initialize('eng'); await worker.setParameters({tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',preserve_interword_spaces:'1',tessedit_pageseg_mode:'6',user_defined_dpi:'300'}); const ret=await worker.recognize(img); await worker.terminate(); const text=ret?.data?.text||''; document.getElementById('ocrDbg')?.classList.remove('hidden'); (document.getElementById('ocrDbg')||document.body).textContent=text; const mrz=parseMRZ(text); if(!mrz){ alert('อ่าน MRZ ไม่สำเร็จ'); return; } document.getElementById('scan-passport').textContent=mrz.passportNo||'-'; document.getElementById('scan-firstName').textContent=mrz.firstName||'-'; document.getElementById('scan-lastName').textContent=mrz.lastName||'-'; document.getElementById('scan-nationality').textContent=mrz.nationality||'-'; document.getElementById('scan-birthDate').textContent=mrz.birthDate||'-'; }catch(e){ alert('OCR ผิดพลาด: '+(e?.message||e)); } finally{ btn.disabled=false; btn.textContent=old; document.body.style.cursor='default'; } }
+async function runMRZ(){ const img=document.getElementById('photo'); if(img.classList.contains('hidden')){ alert('ถ่ายหรือเลือกรูปก่อน'); return; } const modeSel=document.getElementById('ocrMode'); let mode=modeSel.value; const btn=document.getElementById('btnRunMrz'); const old=btn.textContent; btn.disabled=true; btn.textContent='กำลังอ่าน...'; document.body.style.cursor='progress'; try{ try{ await ensureTesseract(mode); }catch(e){ if(mode==='local'){ mode='cdn'; modeSel.value='cdn'; await ensureTesseract('cdn'); } else { throw e; } } let workerConfig; if(mode==='local'){ workerConfig={ workerPath:'./assets/tesseract/worker.min.js', corePath:'./assets/tesseract/tesseract-core.wasm.js', langPath:'./assets/tessdata/', logger:m=>console.log(m) }; }else{ const CDN_JS='https://unpkg.com/tesseract.js@5.1.1/dist/'; const CDN_CORE='https://unpkg.com/tesseract.js-core@5.1.1/tesseract-core.wasm.js'; const CDN_LANG = 'https://tessdata.projectnaptha.com/4.0.0_best'; workerConfig={ workerPath:CDN_JS+'worker.min.js', corePath:CDN_CORE, langPath: CDN_LANG, logger:m=>console.log(m) }; } const worker=await Tesseract.createWorker(workerConfig); await worker.loadLanguage('eng'); await worker.initialize('eng'); await worker.setParameters({tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<',preserve_interword_spaces:'1',tessedit_pageseg_mode:'6',user_defined_dpi:'300'}); const ret=await worker.recognize(img); await worker.terminate(); const text=ret?.data?.text||''; document.getElementById('ocrDbg')?.classList.remove('hidden'); (document.getElementById('ocrDbg')||document.body).textContent=text; const mrz=parseMRZ(text); if(!mrz){ alert('อ่าน MRZ ไม่สำเร็จ'); return; } document.getElementById('scan-passport').textContent=mrz.passportNo||'-'; document.getElementById('scan-firstName').textContent=mrz.firstName||'-'; document.getElementById('scan-lastName').textContent=mrz.lastName||'-'; document.getElementById('scan-nationality').textContent=mrz.nationality||'-'; document.getElementById('scan-birthDate').textContent=mrz.birthDate||'-'; }catch(e){ alert('OCR ผิดพลาด: '+(e?.message||e)); } finally{ btn.disabled=false; btn.textContent=old; document.body.style.cursor='default'; } }
 document.getElementById('btnRunMrz')?.addEventListener('click',runMRZ);
 document.getElementById('toggleDbg')?.addEventListener('click',()=>document.getElementById('ocrDbg').classList.toggle('hidden'));
 
