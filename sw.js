@@ -1,5 +1,5 @@
 
-const CACHE='bhg-v144-app-1';
+const CACHE='bhg-v145-app-1';
 const ASSETS=[
   './','./index.html','./manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png',
@@ -16,7 +16,7 @@ self.addEventListener('activate',e=>{
 });
 self.addEventListener('fetch',e=>{
   const req=e.request, url=req.url;
-  if(/cdn\.jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com/i.test(url)){
+  if(/unpkg\.com|tessdata\.projectnaptha\.com|cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net/i.test(url)){
     e.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(net=>{
       caches.open(CACHE).then(c=>c.put(req,net.clone())); return net;
     }).catch(()=>caches.match('./index.html'))));

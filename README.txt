@@ -1,18 +1,18 @@
-BorderHealth Guardian v1.4.3 (Simple Upload)
+BorderHealth Guardian v1.4.5 — Production Bundle
 
-วิธีแบบง่ายสุด:
-1) อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น GitHub Pages (แทนที่ของเดิม)
-2) เปิดหน้าเว็บ → ไปที่แท็บ OCR → เลือกโหมด "CDN" → ถ่าย/เลือกรูป → กด OCR MRZ
+สิ่งที่ได้:
+- OCR MRZ ทำงานจริง (CDN/Local, auto fallback)
+- คัดกรองด่วน: บันทึก, สรุป, Export CSV
+- จัดการโรคเสี่ยง: เพิ่ม/แก้/ลบ/สวิตช์แจ้งเตือน
+- หน้าแรก: โรคยอดนิยม (อัปเดตตามรายการ), ตัวเลขสรุป
+- PWA ออฟไลน์ (Service Worker cache: bhg-v145-app-1)
+- ปุ่ม "ตรวจไฟล์ OCR" แสดงผลถูกต้อง
 
-อยากใช้ออฟไลน์ (ไม่มีเน็ตก็ใช้ได้):
-- Windows: ดับเบิลคลิก  fetch-ocr-assets.bat
-- หรือ PowerShell: รัน  .\fetch-ocr-assets.ps1
-สคริปต์จะโหลดไฟล์ 4 ตัวไว้ใน assets/   (รวม ~20MB)
-  assets/tesseract/tesseract.min.js
-  assets/tesseract/worker.min.js
-  assets/tesseract/tesseract-core.wasm.js
-  assets/tessdata/eng.traineddata
-เสร็จแล้ว commit ขึ้น GitHub → เปิดเว็บ กด "ตรวจไฟล์ OCR" ให้ขึ้นครบ ✅ → เลือกโหมด "Local assets"
+วิธีใช้งาน:
+1) อัปโหลดไฟล์ทั้งหมดขึ้น GitHub Pages (แทนของเดิม)
+2) เปิดหน้าเว็บ → รีเฟรชแบบ Hard Reload (Ctrl+F5) ครั้งแรก
+3) OCR: 
+   - ถ้ายังไม่มีไฟล์ภาษาที่โลคัล ระบบจะใช้ CDN ให้อัตโนมัติ
+   - ต้องการออฟไลน์: รัน fetch-ocr-assets.bat (Windows) หรือ fetch-ocr-assets.ps1 แล้ว commit ไฟล์ใน assets/
 
-อัปเดตหน้าแล้วไม่เปลี่ยน:
-- เปิด sw.js แล้วเปลี่ยน CACHE เป็นชื่อใหม่ (เช่น bhg-v144-app-1) จากนั้นรีเฟรชแบบ Hard Reload
+จบงานจริง — ถ้ามีคำขอเพิ่ม (เช่น PDF/ZIP รายวัน, PIN เข้ารหัสข้อมูล) แจ้งได้เลย
