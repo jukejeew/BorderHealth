@@ -176,9 +176,12 @@ function showTab(id){
   const btn=[...document.querySelectorAll('nav .tab')].find(x=>x.dataset.tab===id);
   if(btn) btn.classList.add('bg-indigo-600','text-white');
 }
+// แทนที่ตัวเดิมที่จับคลิกสลับแท็บ
 document.addEventListener('click',e=>{
-  const to=e.target.closest('[data-tab]'); if(to) showTab(to.dataset.tab);
-  const to2=e.target.closest('[data-tabto]'); if(to2) showTab(to2.dataset.tabto);
+  const to = e.target.closest('[data-tab]');
+  if (to) { e.preventDefault(); showTab(to.dataset.tab); return; }
+  const to2 = e.target.closest('[data-tabto]');
+  if (to2) { e.preventDefault(); showTab(to2.dataset.tabto); return; }
 });
 showTab('home');
 
@@ -244,7 +247,8 @@ async function ensureTesseract(mode){ if(window.Tesseract) return; if(mode==='lo
 
 function parseMRZ(rawText){
   const clean=rawText.toUpperCase().replace(/[^
-A-Z0-9<]/g,'').replace(//g,'').trim();
+A-Z0-9<]/g,'').replace(/
+/g,'').trim();
   const lines=clean.split('
 ').map(s=>s.trim()).filter(Boolean);
   const cand=lines.filter(s=>s.length>=30 && /^[A-Z0-9<]+$/.test(s)).map(s=>({s,score:(s.match(/</g)||[]).length+s.length}));
