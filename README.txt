@@ -1,19 +1,18 @@
+BorderHealth Guardian v1.4.3 (Simple Upload)
 
-BorderHealth Guardian v1.4.2 — Full bundle
-- แก้ปัญหา 'Tesseract is not defined' โดยเพิ่ม ensureTesseract(mode) ให้โหลดสคริปต์ตามโหมด
-- OCR: CDN (tesseract.js 5.1.1) + Fallback เป็น Local assets อัตโนมัติ
-- PWA: sw.js + manifest + icons
-- โครงเมนูรวมหน้าเดียว: หน้าแรก / OCR MRZ / คัดกรองด่วน / จัดการโรคเสี่ยง / สถิติ
+วิธีแบบง่ายสุด:
+1) อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น GitHub Pages (แทนที่ของเดิม)
+2) เปิดหน้าเว็บ → ไปที่แท็บ OCR → เลือกโหมด "CDN" → ถ่าย/เลือกรูป → กด OCR MRZ
 
-ไฟล์ OCR สำหรับใช้ออฟไลน์ (วางเอง):
-  assets/tesseract/tesseract.min.js         (จาก tesseract.js 5.1.1)
-  assets/tesseract/worker.min.js            (จาก tesseract.js 5.1.1)
-  assets/tesseract/tesseract-core.wasm.js   (จาก tesseract.js-core 5.1.1)
-  assets/tessdata/eng.traineddata           (จาก tessdata_best 4.0.0)
+อยากใช้ออฟไลน์ (ไม่มีเน็ตก็ใช้ได้):
+- Windows: ดับเบิลคลิก  fetch-ocr-assets.bat
+- หรือ PowerShell: รัน  .\fetch-ocr-assets.ps1
+สคริปต์จะโหลดไฟล์ 4 ตัวไว้ใน assets/   (รวม ~20MB)
+  assets/tesseract/tesseract.min.js
+  assets/tesseract/worker.min.js
+  assets/tesseract/tesseract-core.wasm.js
+  assets/tessdata/eng.traineddata
+เสร็จแล้ว commit ขึ้น GitHub → เปิดเว็บ กด "ตรวจไฟล์ OCR" ให้ขึ้นครบ ✅ → เลือกโหมด "Local assets"
 
-ทดสอบ:
-  py -m http.server 8080
-  http://localhost:8080 → ปุ่ม "ตรวจไฟล์ OCR" ให้ขึ้นครบ → โหมด Local assets ใช้งานได้
-
-GitHub Pages:
-  อัปโหลดทั้งหมด (รวมไฟล์ OCR) → เปิด Pages → โหลดรอบแรกแล้วใช้ออฟไลน์ได้
+อัปเดตหน้าแล้วไม่เปลี่ยน:
+- เปิด sw.js แล้วเปลี่ยน CACHE เป็นชื่อใหม่ (เช่น bhg-v144-app-1) จากนั้นรีเฟรชแบบ Hard Reload

@@ -1,5 +1,5 @@
 
-const CACHE='bhg-v142-app-1';
+const CACHE='bhg-v143-app-1';
 const ASSETS=[
   './','./index.html','./manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png',
