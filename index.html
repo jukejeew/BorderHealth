@@ -245,9 +245,13 @@ function loadTesseractCDN(){ if(window.Tesseract) return Promise.resolve(); retu
 async function ensureTesseract(mode){ if(window.Tesseract) return; if(mode==='local'){ await loadScript('./assets/tesseract/tesseract.min.js'); } else { await loadTesseractCDN(); } }
 
 function parseMRZ(rawText){
-  const clean=rawText.toUpperCase().replace(/[^A-Z0-9<\n]/g,'').replace(/\n/g,'').trim();
-  const lines=clean.split('
-').map(s=>s.trim()).filter(Boolean);
+  const clean = rawText.toUpperCase()
+  .replace(/[^\nA-Z0-9<]/g,'')
+  .replace(/\r/g,'')
+  .trim();
+
+const lines = clean.split('\n').map(s=>s.trim()).filter(Boolean);
+
   const cand=lines.filter(s=>s.length>=30 && /^[A-Z0-9<]+$/.test(s)).map(s=>({s,score:(s.match(/</g)||[]).length+s.length}));
   if(cand.length<2){ const tail=lines.slice(-3).filter(s=>s.length>=25); if(tail.length>=2){ cand.push({s:tail[tail.length-2],score:0}); cand.push({s:tail[tail.length-1],score:0}); } }
   if(cand.length<2) return null;
@@ -340,8 +344,7 @@ document.getElementById('qs-export')?.addEventListener('click',()=>{
   const list=DB.get(KEY_QS,[]);
   const header=['date','name','passport','country','symptom','contact','risk'];
   const rows=[header.join(',')].concat(list.map(x=>header.map(k=>`"${(x[k]??'').toString().replace(/"/g,'""')}"`).join(',')));
-  const blob=new Blob([rows.join('
-')],{type:'text/csv;charset=utf-8;'});
+ const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='screenings.csv'; a.click();
 });
 
