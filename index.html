@@ -228,8 +228,7 @@ document.getElementById('assetCheck').onclick=async()=>{
     `assets/tesseract/worker.min.js ......... ${okW?'พบ ✅':'ไม่พบ ❌'}`,
     `assets/tesseract/tesseract-core.wasm.js  ${okC?'พบ ✅':'ไม่พบ ❌'}`,
     `assets/tessdata/eng.traineddata ........ ${okL?'พบ ✅':'ไม่พบ ❌'}`
-  ].join('
-');
+  ].join('\n');
 };
 
 async function startCamera(){ try{ const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}); document.getElementById('cam').srcObject=s; window._cam=s; }catch(e){ alert('เปิดกล้องไม่ได้: '+(e.message||e)); } }
@@ -246,9 +245,7 @@ function loadTesseractCDN(){ if(window.Tesseract) return Promise.resolve(); retu
 async function ensureTesseract(mode){ if(window.Tesseract) return; if(mode==='local'){ await loadScript('./assets/tesseract/tesseract.min.js'); } else { await loadTesseractCDN(); } }
 
 function parseMRZ(rawText){
-  const clean=rawText.toUpperCase().replace(/[^
-A-Z0-9<]/g,'').replace(/
-/g,'').trim();
+  const clean=rawText.toUpperCase().replace(/[^A-Z0-9<\n]/g,'').replace(/\n/g,'').trim();
   const lines=clean.split('
 ').map(s=>s.trim()).filter(Boolean);
   const cand=lines.filter(s=>s.length>=30 && /^[A-Z0-9<]+$/.test(s)).map(s=>({s,score:(s.match(/</g)||[]).length+s.length}));
