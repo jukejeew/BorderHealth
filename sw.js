@@ -1,5 +1,5 @@
 // sw.js (v1.4.5h)
-const CACHE = 'bhg-v145-app-2'; // 👈 เปลี่ยนชื่อแคชใหม่
+const CACHE = 'bhg-v145-app-3'; // 👈 เปลี่ยนชื่อแคชใหม่
 const ASSETS = [
   './','./index.html','./manifest.webmanifest',
   './icons/icon-192.png','./icons/icon-512.png',
