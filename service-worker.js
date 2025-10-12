@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'mfr-cache-v1.10';
+const CACHE_NAME = 'mfr-cache-v1.9';
 const ASSETS = [
   './', // Add a comma here
   './index.html', // Add a comma here

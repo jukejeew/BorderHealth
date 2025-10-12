@@ -1,106 +1,23 @@
-/* === Premium Skin v1 – Design Tokens === */
-:root{
-  --bg: #f6f7fb;
-  --panel: #ffffff;
-  --text: #111827;
-  --muted: #6b7280;
-  --brand: #4f46e5;
-  --brand-600:#4338ca;
-  --brand-100:#eef2ff;
-  --ok:#10b981;
-  --warn:#f59e0b;
-  --err:#ef4444;
-  --ring:#a5b4fc;
-  --radius: 14px;
-  --shadow: 0 10px 30px rgba(17,24,39,.08);
-  --shadow-soft: 0 4px 14px rgba(17,24,39,.06);
-  --transition: 160ms cubic-bezier(.22,.61,.36,1);
-}
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Thai", "Noto Sans", "Helvetica Neue", Arial;
-  margin:0; background:var(--bg); color:var(--text);
-}
-
-/* Header */
-header{
-  position: sticky; top:0; z-index:10;
-  background: linear-gradient(135deg,#4f46e5,#6366f1);
-  color:#fff; padding:18px 20px;
-  box-shadow: var(--shadow-soft);
-}
-header h1{font-size:20px; margin:0; letter-spacing:.2px}
-#status{font-size:13px; opacity:.95; display:flex; gap:10px; align-items:center}
-.badge{
-  padding:4px 10px; border-radius:999px; font-weight:600;
-  background:rgba(255,255,255,.18); backdrop-filter: blur(6px);
-  border:1px solid rgba(255,255,255,.25);
-}
-#net-online{ background: rgba(16,185,129,.2); border-color: rgba(16,185,129,.35);}
-#net-offline{ background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.35);}
-
-/* Layout */
-main{max-width:760px;margin:22px auto;padding:0 16px}
-.panel{
-  background:var(--panel); border-radius:var(--radius);
-  box-shadow: var(--shadow); padding:18px; margin-bottom:16px;
-  animation: pop .25s ease-out;
-}
-@keyframes pop{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
-
-/* Labels & Inputs */
-label{font-weight:700; font-size:14px; color:#111; display:block; margin:12px 0 6px}
-input,textarea{
-  width:100%; padding:12px 13px; font-size:15px; border-radius:12px;
-  background:#fbfcfe; border:1px solid #dbe0ea;
-  transition: border var(--transition), box-shadow var(--transition), background var(--transition);
-}
-input:focus,textarea:focus{
-  outline:0; border-color:var(--ring);
-  box-shadow: 0 0 0 4px rgba(165,180,252,.35);
-  background:#fff;
-}
-input:disabled,textarea:disabled{opacity:.6}
-
-/* Actions */
-.actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
-.btn{
-  flex:1; border:none; border-radius:12px; padding:12px 14px; font-weight:800; cursor:pointer; color:#fff;
-  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
-  box-shadow: var(--shadow-soft);
-}
-.btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
-.btn-primary{background:var(--brand)}
-.btn-primary:hover{background:var(--brand-600); transform: translateY(-1px)}
-.btn-accent{background:#0891b2}
-.btn-success{background:var(--ok)}
-.btn-outline{
-  background:#fff; color:var(--brand); border:2px solid var(--brand);
-}
-.btn-outline:hover{background:var(--brand-100)}
-
-/* Chips (symptoms) */
-.chips{display:flex; flex-wrap:wrap; gap:8px}
-.chip{
-  border:1.5px solid #c7cff5; background:#f8fafc; padding:7px 12px; border-radius:999px; cursor:pointer; font-size:13px;
-  transition: background var(--transition), border var(--transition), transform var(--transition);
-}
-.chip:hover{transform: translateY(-1px)}
-.chip.active{background:var(--brand-100); border-color:var(--brand); color:var(--brand)}
-
-/* Message / Toast line */
-.msg{
-  min-height:22px; margin-top:6px; font-weight:700;
-}
-.msg.ok{ color: var(--ok)}
-.msg.warn{ color: var(--warn)}
-.msg.err{ color: var(--err)}
-
-/* Footer */
-footer{padding:16px 0 32px; text-align:center; color:var(--muted); font-size:13px}
-
-/* Small helpers */
-.hr{height:1px; background: #eef2ff; margin:10px 0}
-
+*{box-sizing:border-box}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto; margin:0; background:#f6f7fb; color:#111}
+header{background:#4f46e5;color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+h1{font-size:18px;margin:0}
+#status{font-size:13px;opacity:.9;display:flex;gap:8px;align-items:center}
+#net.online{background:#16a34a;color:#fff;padding:2px 8px;border-radius:999px}
+#net.offline{background:#ef4444;color:#fff;padding:2px 8px;border-radius:999px}
+main{max-width:680px;margin:20px auto;padding:16px}
+form{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:16px;display:grid;gap:10px}
+label{font-weight:600;font-size:14px}
+input,textarea{width:100%;padding:10px 12px;border:1px solid #dbe0ea;border-radius:10px;font-size:14px;background:#fbfcfe}
+input:focus,textarea:focus{outline:2px solid #a5b4fc;border-color:#a5b4fc;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid #c7cff5;background:#eef2ff;padding:6px 10px;border-radius:999px;cursor:pointer;font-size:13px}
+.chips button.active{background:#c7d2fe;border-color:#818cf8}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.actions button{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;color:#fff;font-weight:700}
+#saveBtn{background:#4f46e5}
+#saveBtn:disabled { opacity: .6; cursor: not-allowed; }
+#flushBtn{background:#0891b2}
+#exportBtn{background:#059669}
+footer{padding:12px;text-align:center;color:#555}
+.msg{min-height:20px;color:#0f766e;font-weight:600}

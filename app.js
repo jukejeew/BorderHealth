@@ -9,23 +9,12 @@ const netBadge = $('#net');
 const qBadge = $('#queueCount');
 const msg = $('#msg');
 
-// ===== Update badge online/offline ให้ดูแพงขึ้น =====
 function updateNetUI() {
-  const el = document.getElementById('net');
   const online = navigator.onLine;
-  el.textContent = online ? 'Online' : 'Offline';
-  el.id = online ? 'net-online' : 'net-offline'; // สลับสไตล์ด้วย id
+  netBadge.textContent = online ? 'Online' : 'Offline';
+  netBadge.className = online ? 'online' : 'offline';
+  netBadge.id = 'net';
 }
-
-// ===== Chips =====
-function initChips() {
-  document.querySelectorAll('#symptoms .chip').forEach(btn => {
-    btn.addEventListener('click', () => btn.classList.toggle('active'));
-  });
-}
-
-// (เหลือส่วนอื่นตามเดิมได้เลย)
-
 window.addEventListener('online', () => { updateNetUI(); flushQueue(); });
 window.addEventListener('offline', updateNetUI);
 
@@ -35,7 +24,7 @@ async function refreshQueueCount() {
   return items.length;
 }
 
-console.log('[MFR] app.js v1.10 loaded'); // ไว้ดูว่าขึ้นไฟล์ใหม่จริง
+console.log('[MFR] app.js v1.9 loaded'); // ไว้ดูว่าขึ้นไฟล์ใหม่จริง
 
 async function sendPayload(payload) {
   if (!GAS_URL || GAS_URL.startsWith('PUT_YOUR_')) {

@@ -1,55 +1,74 @@
-<header>
-  <h1>Mini First Report</h1>
-  <div id="status">
-    <span id="net" class="badge">Offline</span>
-    <span class="badge">ค้างส่ง: <span id="queueCount">0</span></span>
-  </div>
-</header>
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#4f46e5">
+  <title>Mini First Report</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Mini First Report</h1>
+    <div id="status">
+      <span id="net">Online</span>
+      <span>•</span>
+      <span id="queueCount">ค้างส่ง: 0</span>
+    </div>
+  </header>
 
-<main>
-  <section class="panel">
+  <main>
     <form id="reportForm">
       <label>ชื่อ</label>
       <input id="name" placeholder="ชื่อ-นามสกุล" required>
 
       <label>เลขพาสปอร์ต</label>
-      <input id="passport" placeholder="AA1234567" required>
+      <input id="passport" placeholder="เช่น AA1234567" required>
 
       <label>สัญชาติ</label>
-      <input id="nation" placeholder="THA / USA">
+      <input id="nation" placeholder="เช่น THA / USA" required>
 
       <label>เที่ยวบิน</label>
-      <input id="flight" placeholder="TG123">
+      <input id="flight" placeholder="เช่น TG123" required>
 
       <label>อุณหภูมิ (°C)</label>
-      <input id="temp" type="number" step="0.1" min="30" max="45" placeholder="36.5">
+      <input id="temp" type="number" step="0.1" placeholder="36.5" required>
 
       <label>อาการ</label>
       <div class="chips" id="symptoms">
-        <!-- เปลี่ยน class button เป็น .chip -->
-        <button type="button" class="chip" data-s="ไข้">ไข้</button>
-        <button type="button" class="chip" data-s="ไอ">ไอ</button>
-        <button type="button" class="chip" data-s="เจ็บคอ">เจ็บคอ</button>
-        <button type="button" class="chip" data-s="น้ำมูก">น้ำมูก</button>
-        <button type="button" class="chip" data-s="อ่อนเพลีย">อ่อนเพลีย</button>
+        <button type="button" data-s="ไข้">ไข้</button>
+        <button type="button" data-s="ไอ">ไอ</button>
+        <button type="button" data-s="เจ็บคอ">เจ็บคอ</button>
+        <button type="button" data-s="น้ำมูก">น้ำมูก</button>
+        <button type="button" data-s="อ่อนเพลีย">อ่อนเพลีย</button>
       </div>
 
       <label>บันทึกเพิ่มเติม</label>
       <textarea id="note" rows="3" placeholder="หมายเหตุ (ถ้ามี)"></textarea>
 
-      <div class="hr"></div>
       <div class="actions">
-        <button id="saveBtn" class="btn btn-primary" type="submit">บันทึก</button>
-        <button id="flushBtn" class="btn btn-accent" type="button">ส่งค้างตอนนี้</button>
-        <button id="exportBtn" class="btn btn-outline" type="button">ดาวน์โหลด CSV</button>
+        <button id="saveBtn" type="submit">บันทึก</button>
+        <button id="flushBtn" type="button">ส่งค้างตอนนี้</button>
+        <button id="exportBtn" type="button">ดาวน์โหลด CSV</button>
       </div>
-
       <p id="msg" class="msg"></p>
     </form>
-  </section>
+  </main>
 
   <footer>
-    <small>&copy; 2025 JukeJeew Studio</small>
-    <small>PWA • IndexedDB • Google Sheets</small>
+    <small> &copy; 2025 JukeJeew Studio • PWA • IndexedDB • Google Sheets</small>
   </footer>
-</main>
+
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+</body>
+</html>
