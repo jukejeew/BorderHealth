@@ -1,0 +1,23 @@
+
+*{box-sizing:border-box}body{font-family:system-ui,-apple-system,'Segoe UI',Roboto; margin:0; background:#f6f7fb; color:#111}
+header{background:#4f46e5;color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+h1{font-size:18px;margin:0}
+#status{font-size:13px;opacity:.9;display:flex;gap:8px;align-items:center}
+#net.online{background:#16a34a;color:#fff;padding:2px 8px;border-radius:999px}
+#net.offline{background:#ef4444;color:#fff;padding:2px 8px;border-radius:999px}
+main{max-width:680px;margin:20px auto;padding:16px}
+form{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);padding:16px;display:grid;gap:10px}
+label{font-weight:600;font-size:14px}
+input,textarea{width:100%;padding:10px 12px;border:1px solid #dbe0ea;border-radius:10px;font-size:14px;background:#fbfcfe}
+input:focus,textarea:focus{outline:2px solid #a5b4fc;border-color:#a5b4fc;background:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid #c7cff5;background:#eef2ff;padding:6px 10px;border-radius:999px;cursor:pointer;font-size:13px}
+.chips button.active{background:#c7d2fe;border-color:#818cf8}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.actions button{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;color:#fff;font-weight:700}
+#saveBtn{background:#4f46e5}
+#saveBtn:disabled { opacity: .6; cursor: not-allowed; }
+#flushBtn{background:#0891b2}
+#exportBtn{background:#059669}
+footer{padding:12px;text-align:center;color:#555}
+.msg{min-height:20px;color:#0f766e;font-weight:600}
