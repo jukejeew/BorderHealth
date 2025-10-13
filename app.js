@@ -1,6 +1,6 @@
 // ===== app.js (clean v2.2) =====
 // TODO: ใส่ URL ของ Google Apps Script (Web App) ของคุณที่นี่
-const GAS_URL = "PUT_YOUR_GAS_URL_HERE";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzMQHSAKRdJ3PxGmzK4IXhyUSLLTAncwuKYKNPxMDNZseGSMMwq8p4TJvcmTv3f83T0/exec";
 
 // -------- Shorthands & Safe DOM --------
 const $  = (sel, root = document) => root.querySelector(sel);
