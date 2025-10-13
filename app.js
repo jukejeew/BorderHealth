@@ -5,6 +5,15 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbzMQHSAKRdJ3PxGmzK4IXhy
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
+
+// Safe DOM helpers (added by fixer)
+const byId = (id) => document.getElementById(id);
+function mustId(id, label = id) {
+  const el = byId(id);
+  if (!el) throw new Error('Missing element #' + id + ' (' + label + ')');
+  return el;
+}
+function getText(id, label) { return (mustId(id, label).value || '').trim(); }
 const netBadge = $('#net');
 const qBadge = $('#queueCount');
 const msg = $('#msg');
@@ -87,20 +96,23 @@ async function flushQueue() {
   refreshQueueCount();
 }
 
+
 function collectForm() {
   const activeSymptoms = $$('#symptoms button.active').map(b => b.dataset.s);
-  const tempVal = parseFloat($('#temp').value);
+  const t = parseFloat(byId('temp')?.value);
   return {
     id: (crypto?.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random(),
-    name: $('#name').value.trim(),
-    passport: $('#passport').value.trim(),
-    nation: $('#nation').value.trim(),
-    flight: $('#flight').value.trim(),
-    temp: Number.isFinite(tempVal) ? tempVal : null,
+    name: getText('name', 'ชื่อ'),
+    passport: getText('passport', 'เลขพาสปอร์ต'),
+    nation: getText('nationality', 'สัญชาติ'),
+    flight: getText('flight', 'เที่ยวบิน'),
+    temp: Number.isFinite(t) ? t : null,
     symptoms: activeSymptoms,
-    note: $('#note').value.trim(),
+    note: getText('note', 'บันทึกเพิ่มเติม'),
     ts: new Date().toISOString()
   };
+}
+;
 }
 
 function downloadCSV(rows) {
