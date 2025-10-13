@@ -32,16 +32,24 @@
       <input id="name" placeholder="ชื่อ-นามสกุล" required>
 
       <label>เลขพาสปอร์ต</label>
-      <input id="passport" placeholder="เช่น AA1234567" required>
+      <input id="passport" pattern="[A-Z]{2}[0-9]{6,}" placeholder="เช่น AA1234567" required>
 
-      <label>สัญชาติ</label>
-      <input id="nation" placeholder="เช่น THA / USA" required>
+      <label>สัญชาติ/ประเทศ
+        <input id="nationality" list="countries" placeholder="พิมพ์ไทย/อังกฤษ หรือรหัสประเทศ (เช่น TH)">
+      </label>
+      <datalist id="countries"></datalist>
+
+        <script src="datalist-countries.js"></script>
+        <script>
+          // เติม <option> ให้ datalist ด้วยชื่อประเทศ (ไทยถ้าได้, ถ้าไม่รองรับจะ fallback อังกฤษ) + รหัส (TH)
+          populateCountryDatalist('countries', 'th');
+        </script>
 
       <label>เที่ยวบิน</label>
-      <input id="flight" placeholder="เช่น TG123" required>
+      <input id="flight" inputmode="latin" placeholder="เช่น TG123" required>
 
       <label>อุณหภูมิ (°C)</label>
-      <input id="temp" type="number" step="0.1" placeholder="36.5" required>
+      <input id="temp" type="number"min="34" max="42" step="0.1" placeholder="เช่น 36.5 °C" required>
 
       <label>อาการ</label>
       <div class="chips" id="symptoms">
