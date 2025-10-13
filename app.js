@@ -24,7 +24,7 @@ async function refreshQueueCount() {
   return items.length;
 }
 
-console.log('[MFR] app.js v1.9 loaded'); // ไว้ดูว่าขึ้นไฟล์ใหม่จริง
+console.log('[MFR] app.js v2.0 loaded'); // ไว้ดูว่าขึ้นไฟล์ใหม่จริง
 
 async function sendPayload(payload) {
   if (!GAS_URL || GAS_URL.startsWith('PUT_YOUR_')) {
