@@ -1,4 +1,4 @@
-// ===== app.js (clean v2.2) =====
+// ===== app.js (clean v2.3) =====
 // TODO: ใส่ URL ของ Google Apps Script (Web App) ของคุณที่นี่
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzMQHSAKRdJ3PxGmzK4IXhyUSLLTAncwuKYKNPxMDNZseGSMMwq8p4TJvcmTv3f83T0/exec";
 
@@ -146,7 +146,7 @@ function initChips() {
 
 // -------- Init --------
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("[MFR] app.js v2.2 loaded");
+  console.log("[MFR] app.js v2.3 loaded");
   updateNetUI();
   initChips();
   refreshQueueCount();

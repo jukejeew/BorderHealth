@@ -1,5 +1,5 @@
 /* service-worker.js — BorderHealth v2.0 (subpath-safe) */
-const SW_VERSION = 'bh-v2.1';
+const SW_VERSION = 'bh-v2.3';
 
 /** รายการไฟล์แกน (อย่าใส่สแลชนำหน้า) */
 const APP_SHELL = [
