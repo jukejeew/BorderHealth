@@ -124,13 +124,12 @@ function downloadCSV(rows) {
       p.flight || "",
       (p.temp ?? ""),
       (p.symptoms || []).join("|"),
-      (p.note || "").replace(/[
-,]/g, " ")
+      (p.note || "").replace(/[,]/g, " ")
     ].map(v => `"${String(v).replace(/"/g, '""')}"`);
     lines.push(arr.join(","));
   }
-  const blob = new Blob([lines.join("
-")], { type: "text/csv;charset=utf-8" });
+  // Missing closing bracket and parenthesis for the previous block, removed for correction
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url; a.download = `bhg-backup-${Date.now()}.csv`; a.click();
