@@ -1,5 +1,5 @@
 // ===== WebApp.gs (v2.5 – Server: use client epoch, write Thai string) =====
-const SHEET_ID   = 'PUT_YOUR_SHEET_ID';
+const SHEET_ID   = '1-3kt0h1dkuV_1TUdRwnnc3zv17wiyX3CEjTLq1lPqAw';
 const SHEET_NAME = 'Data';
 const TZ         = 'Asia/Bangkok';
 
