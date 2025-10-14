@@ -105,7 +105,7 @@ function collectForm() {
     temp:        Number.isFinite(tNum) ? tNum : null,
     symptoms:    activeSymptoms,
     note:        getText("note", "บันทึกเพิ่มเติม"),
-    ts:          Date.now(), // ✅ ส่งเลข epoch ms ชัวร์ ไม่ถูกแปลงเป็น Z
+    \1Date.now(), // epoch ms (แก้ปัญหา UTC ทันที)
   };
 }
 
