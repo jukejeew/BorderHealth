@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="th">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,16 +10,17 @@
   <title>Border Health Guardian</title>
   <link rel="stylesheet" href="styles.css">
 
-<!-- PWA meta (Android/Chrome) -->
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#4f46e5">
+  <!-- PWA meta (Android/Chrome) -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4f46e5">
 
-<!-- PWA meta (iOS/Safari) -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+  <!-- PWA meta (iOS/Safari) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
 </head>
+
 <body>
   <header>
     <h1>Border Health Guardian</h1>
@@ -42,11 +44,11 @@
       </label>
       <datalist id="countries"></datalist>
 
-        <script src="datalist-countries.js"></script>
-        <script>
-          // เติม <option> ให้ datalist ด้วยชื่อประเทศ (ไทยถ้าได้, ถ้าไม่รองรับจะ fallback อังกฤษ) + รหัส (TH)
-          populateCountryDatalist('countries', 'th');
-        </script>
+      <script src="datalist-countries.js"></script>
+      <script>
+        // เติม <option> ให้ datalist ด้วยชื่อประเทศ (ไทยถ้าได้, ถ้าไม่รองรับจะ fallback อังกฤษ) + รหัส (TH)
+        populateCountryDatalist('countries', 'th');
+      </script>
 
       <label>เที่ยวบิน</label>
       <input id="flight" inputmode="latin" placeholder="เช่น TG123" required>
@@ -89,4 +91,5 @@
     }
   </script>
 </body>
+
 </html>
